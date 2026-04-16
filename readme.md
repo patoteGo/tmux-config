@@ -131,6 +131,11 @@ If you are an iTerm2 user, third column describes the keybinding of similar  "ac
         <td>-</td>
     </tr>
     <tr>
+        <td><code>&lt;prefix&gt; ,</code></td>
+        <td>Enter sticky resize mode; then use <code>h/j/k/l</code> repeatedly without re-pressing prefix, and <code>q</code>, <code>Esc</code>, or <code>Enter</code> to exit. Status line shows <code>[RESIZE]</code> while active.</td>
+        <td>-</td>
+    </tr>
+    <tr>
         <td><code>&lt;prefix&gt; R</code></td>
         <td>Rename current session</td>
         <td>-</td>
@@ -176,24 +181,24 @@ If you are an iTerm2 user, third column describes the keybinding of similar  "ac
         <td>⌘⌥↓</td>
     </tr>
     <tr>
-        <td><code>&lt;prefix&gt; C-←</code></td>
-        <td>Resize pane to the left</td>
-        <td>^⌘←</td>
+        <td><code>&lt;prefix&gt; h / j / k / l</code></td>
+        <td>Move between panes using Vim keys (left/down/up/right)</td>
+        <td>-</td>
     </tr>
     <tr>
-        <td><code>&lt;prefix&gt; C-→</code></td>
-        <td>Resize pane to the right</td>
-        <td>^⌘→</td>
+        <td><code>&lt;prefix&gt; C-h / C-j / C-k / C-l</code></td>
+        <td>Resize pane using Vim keys and Ctrl (left/down/up/right)</td>
+        <td>-</td>
     </tr>
     <tr>
-        <td><code>&lt;prefix&gt; C-↑</code></td>
-        <td>Resize pane to the top</td>
-        <td>^⌘↑</td>
+        <td><code>&lt;prefix&gt; H / J / K / L</code></td>
+        <td>Resize pane using Vim-style uppercase keys (left/down/up/right)</td>
+        <td>-</td>
     </tr>
     <tr>
-        <td><code>&lt;prefix&gt; C-↓</code></td>
-        <td>Resize pane to the bottom</td>
-        <td>^⌘↓</td>
+        <td><code>&lt;prefix&gt; C-← / C-→ / C-↑ / C-↓</code></td>
+        <td>Arrow-key resize still works if your terminal passes those keys through</td>
+        <td>^⌘← / ^⌘→ / ^⌘↑ / ^⌘↓</td>
     </tr>
     <tr>
         <td><code>&lt;prefix&gt; &gt;</code></td>
@@ -211,7 +216,27 @@ If you are an iTerm2 user, third column describes the keybinding of similar  "ac
         <td>^Tab</td>
     </tr>
     <tr>
-        <td><code>&lt;prefix&gt; L</code></td>
+        <td><code>&lt;prefix&gt; ;</code></td>
+        <td>Switch to the previously active pane</td>
+        <td>-</td>
+    </tr>
+    <tr>
+        <td><code>&lt;prefix&gt; s</code></td>
+        <td>Open interactive session chooser (choose-tree)</td>
+        <td>-</td>
+    </tr>
+    <tr>
+        <td><code>&lt;prefix&gt; w</code></td>
+        <td>Open interactive window chooser (choose-tree)</td>
+        <td>-</td>
+    </tr>
+    <tr>
+        <td><code>&lt;prefix&gt; f</code></td>
+        <td>Find a window by name/content</td>
+        <td>-</td>
+    </tr>
+    <tr>
+        <td><code>&lt;prefix&gt; W</code></td>
         <td>Link window from another session by entering target session and window reference</td>
         <td>-</td>
     </tr>
@@ -226,10 +251,30 @@ If you are an iTerm2 user, third column describes the keybinding of similar  "ac
         <td>-</td>
     </tr>
     <tr>
+        <td><code>&lt;prefix&gt; z</code></td>
+        <td>Toggle zoom for current pane</td>
+        <td>-</td>
+    </tr>
+    <tr>
         <td><code>&lt;prefix&gt; +</code></td>
         <td>Toggle zoom for current pane</td>
         <td>⌘⇧Enter</td>
-    </td>
+    </tr>
+    <tr>
+        <td><code>&lt;prefix&gt; Space</code></td>
+        <td>Cycle through pane layouts</td>
+        <td>-</td>
+    </tr>
+    <tr>
+        <td><code>&lt;prefix&gt; !</code></td>
+        <td>Break current pane into a new window</td>
+        <td>-</td>
+    </tr>
+    <tr>
+        <td><code>&lt;prefix&gt; @</code></td>
+        <td>Join a pane from another session/window by prompt</td>
+        <td>-</td>
+    </tr>
     <tr>
         <td><code>&lt;prefix&gt; x</code></td>
         <td>Kill current pane</td>
@@ -358,7 +403,7 @@ There is a root keybinding to enter Copy mode: `M-Up`. Once in copy mode, you ha
 
 `Space` starts selection, `Enter` copies selection and exits copy mode. List all items in copy buffer using `prefix C-p`, and paste most recent item from buffer using `prexix p`.
 
-`y` just copies selected text and is equivalent to `Enter`,  `Y` copies whole line, and `D` copies by the end of line.
+For Vim users, `v` starts selection, `V` selects whole line, `C-v` toggles rectangle selection, `y` copies selected text, `Y` copies whole line, and `D` copies by the end of line. `Escape` cancels copy mode.
 
 Also, note, that when text is copied any trailing new lines are stripped. So, when you paste buffer in a command prompt, it will not be immediately executed.
 

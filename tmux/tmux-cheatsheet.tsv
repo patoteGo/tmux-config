@@ -1,0 +1,67 @@
+Category	Action	Binding	Notes
+Prefix	Tmux prefix	Ctrl-a	This config uses Ctrl-a instead of Ctrl-b
+Config	Open tmux config	Ctrl-a Ctrl-e	Opens ~/.tmux.conf in $EDITOR and reloads on save/exit
+Config	Reload config	Ctrl-a Ctrl-r	Reload current tmux config
+Session	Rename session	Ctrl-a Shift-r	Prompt for session name
+Session	Detach current client	Ctrl-a d	Detach from session
+Session	Detach other clients	Ctrl-a Shift-d	Detach all other clients from same session
+Session	Kill session	Ctrl-a Shift-q	Confirmation prompt
+Session	Session tree / chooser	Ctrl-a s	Interactive choose-tree for sessions
+Session	Merge current session into another	Ctrl-a Ctrl-u	Moves all windows to target session
+Window	New window	Ctrl-a c	Starts in current pane path
+Window	Prompt rename window	Auto after new window	Also available manually with Ctrl-a r
+Window	Rename window	Ctrl-a r	Prompt for window name
+Window	Previous window	Ctrl-a Ctrl-[	Cycle backward
+Window	Next window	Ctrl-a Ctrl-]	Cycle forward
+Window	Last used window	Ctrl-a Tab	MRU window toggle
+Window	Window tree / chooser	Ctrl-a w	Interactive choose-tree for windows
+Window	Find window	Ctrl-a f	Search windows by name/content
+Window	Kill window	Ctrl-a Shift-x	Kill current window
+Window	Kill other windows	Ctrl-a Ctrl-x	Keep current window only
+Window	Link window from another session	Ctrl-a Shift-w	Prompt for session:window
+Pane	Split vertically (left/right panes)	Ctrl-a |	Creates side-by-side panes in current path
+Pane	Split horizontally (top/bottom panes)	Ctrl-a _	Creates stacked panes in current path
+Pane	Move pane left	Ctrl-a h	Vim-style pane navigation
+Pane	Move pane down	Ctrl-a j	Vim-style pane navigation
+Pane	Move pane up	Ctrl-a k	Vim-style pane navigation
+Pane	Move pane right	Ctrl-a l	Vim-style pane navigation
+Pane	Last active pane	Ctrl-a ;	Toggle to previous active pane
+Pane	Swap with next pane	Ctrl-a Ctrl-o	Rotate/swap current pane forward
+Pane	Swap with pane 1	Ctrl-a \	Useful with main-horizontal/main-vertical layouts
+Pane	Resize pane left	Ctrl-a Ctrl-h	Resize by 5 cells; may conflict with Backspace in some terminals
+Pane	Resize pane down	Ctrl-a Ctrl-j	Resize by 5 cells
+Pane	Resize pane up	Ctrl-a Ctrl-k	Resize by 5 cells
+Pane	Resize pane right	Ctrl-a Ctrl-l	Resize by 5 cells
+Pane	Enter sticky resize mode	Ctrl-a ,	Then use h/j/k/l repeatedly without re-prefixing; q, Esc, or Enter exits; status shows [RESIZE]
+Pane	Resize pane left (alt)	Ctrl-a H	Vim-style uppercase alternative
+Pane	Resize pane down (alt)	Ctrl-a J	Vim-style uppercase alternative
+Pane	Resize pane up (alt)	Ctrl-a K	Vim-style uppercase alternative
+Pane	Resize pane right (alt)	Ctrl-a L	Vim-style uppercase alternative
+Pane	Zoom/unzoom pane	Ctrl-a z	Primary zoom toggle
+Pane	Alternative zoom/unzoom	Ctrl-a +	Same as Ctrl-a z
+Pane	Cycle pane layout	Ctrl-a Space	Switch layout preset
+Pane	Break pane into new window	Ctrl-a !	Turns current pane into its own window
+Pane	Join pane from elsewhere	Ctrl-a @	Prompt for session:window.pane source
+Pane	Kill pane	Ctrl-a x	Kill current pane
+Clipboard	Paste tmux buffer	Ctrl-a p	Paste most recent tmux buffer
+Clipboard	Choose buffer	Ctrl-a Ctrl-p	List tmux buffers
+Copy mode	Enter copy mode	Alt-Up	Root binding, no prefix needed
+Copy mode	Scroll up 1 line	Alt-Up	Inside copy mode
+Copy mode	Scroll down 1 line	Alt-Down	Inside copy mode
+Copy mode	Half-page up	Alt-PageUp	Inside copy mode
+Copy mode	Half-page down	Alt-PageDown	Inside copy mode
+Copy mode	Page up	PageUp	Inside copy mode
+Copy mode	Page down	PageDown	Inside copy mode
+Copy mode	Begin selection	v	Vim-style selection in copy mode
+Copy mode	Select line	V	Vim-style line selection in copy mode
+Copy mode	Rectangle selection	Ctrl-v	Toggle block selection in copy mode
+Copy mode	Copy selection and exit	Enter	Also y or Ctrl-j
+Copy mode	Copy selection and exit	y	Vi copy mode
+Copy mode	Copy whole line	Y	Vi copy mode
+Copy mode	Copy to end of line	D	Vi copy mode
+Copy mode	Cancel copy mode	Escape	Vi copy mode
+Monitoring	Toggle monitor activity	Ctrl-a m	Per-window activity alerts
+Monitoring	Toggle monitor silence	Ctrl-a Shift-m	Prompt for silence interval
+UI	Toggle status bar	Ctrl-a Ctrl-s	Hide/show status bar
+Env	Renew tmux environment	Ctrl-a $	Refresh SSH/display-related vars
+Nested tmux	Toggle outer tmux keys OFF/ON	F12	For nested local+remote tmux sessions

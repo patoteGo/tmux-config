@@ -1,0 +1,4 @@
+Object	Create	Rename	Kill	Other useful
+Session	tmux new -s name	Ctrl-a Shift-r	Ctrl-a Shift-q	Detach: Ctrl-a d
+Window	Ctrl-a c	Ctrl-a r	Ctrl-a Shift-x	Find: Ctrl-a f; chooser: Ctrl-a w
+Pane	Ctrl-a |	—	Ctrl-a x	Split alt: Ctrl-a _; break: Ctrl-a !; join: Ctrl-a @; zoom: Ctrl-a z

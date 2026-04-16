@@ -28,7 +28,13 @@ if [ -e "$HOME/.tmux.conf" ]; then
 fi
 
 cp -f "$HOME/.tmux.conf" "$HOME/.tmux.conf.bak" 2>/dev/null || true
-cp -a ./tmux/. "$HOME"/.tmux/
+mkdir -p "$HOME/.tmux" "$HOME/.tmux/plugins" "$HOME/.tmux/resurrect"
+for file in renew_env.sh tmux.conf tmux.remote.conf yank.sh; do
+  if [ -e "$HOME/.tmux/$file" ] || [ -L "$HOME/.tmux/$file" ]; then
+    rm -f "$HOME/.tmux/$file"
+  fi
+  ln -sf "$REPODIR/tmux/$file" "$HOME/.tmux/$file"
+done
 ln -sf .tmux/tmux.conf "$HOME"/.tmux.conf;
 
 # Install TPM plugins.
