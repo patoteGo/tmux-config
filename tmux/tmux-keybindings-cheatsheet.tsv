@@ -2,7 +2,8 @@ Category	Action	Binding	Notes
 Prefix	Tmux prefix	Ctrl-a	This config uses Ctrl-a instead of Ctrl-b
 Config	Open tmux config	Ctrl-a Ctrl-e	Opens ~/.tmux.conf in $EDITOR and reloads on save/exit
 Config	Reload config	Ctrl-a Ctrl-r	Reload current tmux config
-Session	Rename session	Ctrl-a : then `rename-session`	`Ctrl-a Shift-r` is overridden later by resurrect rescue
+Session	Restore session	Ctrl-a Shift-r	Run tmux-resurrect rescue restore
+Session	Rename session	Ctrl-a Shift-s	Prompt for session name
 Session	Detach current client	Ctrl-a d	Detach from session
 Session	Detach other clients	Ctrl-a Shift-d	Detach all other clients from same session
 Session	Kill session	Ctrl-a Shift-q	Confirmation prompt

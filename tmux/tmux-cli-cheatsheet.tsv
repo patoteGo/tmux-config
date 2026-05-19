@@ -1,0 +1,19 @@
+Category	Action	Command	Notes
+Session	Create new session	tmux new -s name	Starts a new named session
+Session	Attach to session	tmux attach -t name	Reconnect to a named session
+Session	Attach last session	tmux attach	Attaches to most recent session
+Session	List sessions	tmux ls	Alias: tmux list-sessions
+Session	Rename session	tmux rename-session -t old new	Can be run from outside tmux
+Session	Kill session	tmux kill-session -t name	Kills one session
+Server	Kill tmux server	tmux kill-server	Kills all sessions and clients
+Session	Create or attach	tmux new -A -s name	Attach if exists, otherwise create
+Session	Detach all clients from session	tmux detach-client -a -s name	Useful before maintenance
+Check	Check session exists	tmux has-session -t name	Exit code 0 if session exists
+Window	List windows in session	tmux list-windows -t name	Alias: tmux lsw -t name
+Pane	List panes in window	tmux list-panes -t name:window	Useful for scripting
+Config	Reload config	tmux source-file ~/.tmux.conf	Applies config without restarting server
+Info	Show tmux version	tmux -V	Prints installed tmux version
+Shell	Run command in new session	tmux new -s name 'cmd'	Session exits when cmd finishes unless shell stays open
+Shell	Send keys to pane	tmux send-keys -t name:window.pane 'cmd' Enter	Useful for automation/scripts
+Capture	Capture pane output	tmux capture-pane -p -t name:window.pane	Print pane contents to stdout
+Targeting	Use target syntax	name:window.pane	Examples: dev:2.1, work:1
