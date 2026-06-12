@@ -28,6 +28,7 @@ Features
 - integration with OSX or Linux clipboard (works for local, remote, and local+remote nested session scenario)
 - supercharged status line
 - renew tmux and shell environment (SSH_AUTH_SOCK, DISPLAY, SSH_TTY) when reattaching back to old session
+- reliable built-in tmux session snapshots and restore, without tmux-resurrect/continuum
 - prompt to rename window right after it's created
 - newly created windows and panes retain current working directory
 - monitor windows for activity/silence
@@ -69,13 +70,23 @@ $ ./tmux-config/install.sh
 - copies files to `~/.tmux` directory
 - symlink tmux config file at `~/.tmux.conf`, existing `~/.tmux.conf` will be backed up
 - [Tmux Plugin Manager](https://github.com/tmux-plugins/tpm) will be installed at default location `~/.tmux/plugins/tpm`, unless already presemt
-- required tmux plugins will be installed
+- required tmux UI/clipboard/status plugins will be installed
+- repo-owned session snapshot scripts will be installed at `~/.tmux/session_snapshot.sh` and `~/.tmux/session_restore.sh`
+- session snapshots will be written to `~/.tmux/snapshots/latest.tsv` and rotated automatically
 
 Finally, you can jump into a new tmux session:
 
 ```
 $ tmux new
 ```
+
+Restore behavior:
+
+- `Ctrl-a Shift-r` restores missing sessions and windows from the latest snapshot.
+- Snapshots are refreshed automatically on session/window/pane changes and on client detach.
+- Restore intentionally recreates tmux topology, layout, names, and working directories. It does not try to replay arbitrary pane processes, which is the main source of flaky restores in plugin-driven setups.
+- `install.sh` reloads an already-running tmux server so the new restore flow takes effect immediately.
+- If you are migrating from an older install that used `tmux-continuum`/`tmux-resurrect` and still see `Restoring...`, run `tmux kill-server` once to discard that pre-migration server state.
 
 
 General settings
@@ -137,6 +148,11 @@ If you are an iTerm2 user, third column describes the keybinding of similar  "ac
     </tr>
     <tr>
         <td><code>&lt;prefix&gt; R</code></td>
+        <td>Restore missing sessions and windows from the latest tmux snapshot</td>
+        <td>-</td>
+    </tr>
+    <tr>
+        <td><code>&lt;prefix&gt; S</code></td>
         <td>Rename current session</td>
         <td>-</td>
     </tr>

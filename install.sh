@@ -28,8 +28,8 @@ if [ -e "$HOME/.tmux.conf" ]; then
 fi
 
 cp -f "$HOME/.tmux.conf" "$HOME/.tmux.conf.bak" 2>/dev/null || true
-mkdir -p "$HOME/.tmux" "$HOME/.tmux/plugins" "$HOME/.tmux/resurrect"
-for file in renew_env.sh resurrect_rescue.sh tmux.conf tmux.remote.conf yank.sh; do
+mkdir -p "$HOME/.tmux" "$HOME/.tmux/plugins" "$HOME/.tmux/snapshots"
+for file in renew_env.sh session_restore.sh session_snapshot.sh tmux.conf tmux.remote.conf yank.sh; do
   if [ -e "$HOME/.tmux/$file" ] || [ -L "$HOME/.tmux/$file" ]; then
     rm -f "$HOME/.tmux/$file"
   fi
@@ -45,5 +45,11 @@ tmux new -d -s __noop >/dev/null 2>&1 || true
 tmux set-environment -g TMUX_PLUGIN_MANAGER_PATH "~/.tmux/plugins"
 "$HOME"/.tmux/plugins/tpm/bin/install_plugins || true
 tmux kill-session -t __noop >/dev/null 2>&1 || true
+
+if tmux list-sessions >/dev/null 2>&1; then
+  printf "Reload running tmux server\n"
+  tmux source-file "$HOME/.tmux.conf" >/dev/null 2>&1 || true
+  printf "NOTE: If you are migrating from the old continuum/resurrect setup and still see 'Restoring...', run: tmux kill-server\n"
+fi
 
 printf "OK: Completed\n"
