@@ -1,0 +1,7 @@
+# Copy this file to ~/.tmux/tmux.local.conf on any machine where you want
+# host-specific overrides that should not be shared back into the repo clone.
+
+# Examples:
+# set -g status-right-length 140
+# set -g @copy_backend_remote_tunnel_port 12000
+# set -g status-position bottom

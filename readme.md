@@ -52,12 +52,31 @@ Features
 Installation
 -------------
 Prerequisites:
-- tmux >= "v2.4"
-- OSX, Linux (tested on Ubuntu 14 and CentOS7), FreeBSD (tested on 11.1)
+- tmux >= `3.5`
+- `git`
+- one of:
+  - macOS: `pbcopy` available by default
+  - Linux/X11: `xclip` or `xsel` for clipboard integration
+  - any terminal with OSC 52 support if you want clipboard fallback without native clipboard tools
+- a Powerline-compatible font if you want the status line separators to render correctly
 
-Personally, I use it on OSX 10.11.5 El Capitan through iTerm2.
+Support matrix:
+- tested target: modern macOS and Linux machines with tmux `3.5+`
+- remote nested sessions: supported
+- older tmux releases are not supported by this config anymore, because it uses modern options such as `extended-keys-format`, `allow-passthrough`, and `tmux-256color`
 
-On OSX you can install latest 2.6 version with `brew install tmux`. On Linux it's better to install from source, because official repositories usually contain outdated version. For example, CentOS7 - v1.8 from base repo, Ubuntu 14 - v1.8 from trusty/main. For how to install from source, see this [gist](https://gist.github.com/P7h/91e14096374075f5316e) or just google it.
+This repo is meant to be installed from a clone and keeps `~/.tmux/*` symlinked back to the repository checkout. That is convenient for personal dotfiles and for managing several of your own machines, but it also means the clone should live at a stable path.
+
+Config layout:
+- `tmux.conf`: small loader file
+- `tmux.base.conf`: shared behavior, keybindings, copy mode
+- `tmux.theme.conf`: colors and status line
+- `tmux.plugins.conf`: plugins, hooks, environment renewal
+- `tmux.nesting.conf`: nested-session behavior and optional local override loading
+- `tmux.remote.conf`: remote-session adjustments
+- `~/.tmux/tmux.local.conf`: optional per-machine overrides, not repo-managed by default
+
+On macOS, `brew install tmux` is the easiest path. On Linux, use your distro package if it provides tmux `3.5+`; otherwise install a newer tmux build first.
 
 
 To install tmux-config:
@@ -67,12 +86,32 @@ $ ./tmux-config/install.sh
 ```
 
 `install.sh` script does following:
-- copies files to `~/.tmux` directory
-- symlink tmux config file at `~/.tmux.conf`, existing `~/.tmux.conf` will be backed up
-- [Tmux Plugin Manager](https://github.com/tmux-plugins/tpm) will be installed at default location `~/.tmux/plugins/tpm`, unless already presemt
+- creates `~/.tmux`, `~/.tmux/plugins`, and `~/.tmux/snapshots` as needed
+- symlinks repo-managed files into `~/.tmux`
+- symlinks tmux config file at `~/.tmux.conf`, existing `~/.tmux.conf` will be backed up
+- [Tmux Plugin Manager](https://github.com/tmux-plugins/tpm) will be installed at default location `~/.tmux/plugins/tpm`, unless already present
 - required tmux UI/clipboard/status plugins will be installed
 - repo-owned session snapshot scripts will be installed at `~/.tmux/session_snapshot.sh` and `~/.tmux/session_restore.sh`
 - session snapshots will be written to `~/.tmux/snapshots/latest.tsv` and rotated automatically
+- automatic snapshots are lock-protected and lightly debounced to avoid duplicate writes during rapid tmux hook bursts
+- `~/.tmux/tmux.local.conf.example` is installed as a starting point for host-specific overrides
+
+Fresh machine checklist:
+- install tmux `3.5+`
+- install `git`
+- clone this repo to a stable path
+- run `./install.sh`
+- start tmux with `tmux new`
+- if Powerline separators look broken, switch your terminal font to a Powerline-compatible font
+
+Validation:
+- run `./scripts/validate.sh` for a quick local shell syntax check
+- GitHub Actions CI is included to smoke test installer bootstrap and tmux startup on Ubuntu
+
+Per-machine overrides:
+- copy `~/.tmux/tmux.local.conf.example` to `~/.tmux/tmux.local.conf`
+- put machine-specific tweaks there, such as status width, clipboard tunnel port, or platform-only adjustments
+- `tmux.local.conf` is loaded automatically when present
 
 Finally, you can jump into a new tmux session:
 
@@ -103,7 +142,7 @@ xterm-256color
 # jump into a tmux session
 $ tmux new
 $ echo $TERM
-screen-256color
+tmux-256color
 ```
 
 Key bindings
@@ -437,6 +476,27 @@ This is one of the major limitations of tmux, that you might just decide to give
 - share text with OSX clipboard using **"pbcopy"**
 - share text with OSX clipboard using [reattach-to-user-namespace](https://github.com/ChrisJohnsen/tmux-MacOSX-pasteboard) wrapper to access "pbcopy" from tmux environment (seems on OSX 10.11.5 ElCapitan this is not needed, since I can still access pbcopy without this wrapper).
 - share text with X selection using **"xclip"** or **"xsel"** (store text in primary and clipboard selections). Works on Linux when DISPLAY variable is set.
+
+Troubleshooting
+----------------------
+
+- `install.sh` fails while cloning TPM:
+  make sure `git` is installed and outbound GitHub access is allowed on that machine
+
+- `install.sh` completes but tmux plugins are missing:
+  rerun `~/.tmux/plugins/tpm/bin/install_plugins` and check network access from the target machine
+
+- tmux shows unknown option errors:
+  verify `tmux -V` reports `3.5` or newer
+
+- automatic snapshots seem less frequent than every hook event:
+  that is expected now; snapshot writes are intentionally debounced for a short window to prevent overlapping writes during rapid layout/session changes
+
+- clipboard copy works locally but not on remote hosts:
+  use a terminal with OSC 52 support, or configure the remote tunnel backend described in `tmux.remote.conf`
+
+- status line separators look like squares or question marks:
+  switch to a Powerline-compatible terminal font
 
 All solutions above are suitable for sharing tmux buffer with system clipboard for local machine scenario. They still does not address remote session scenarios. What we need is some way to transport buffer from remote machine to the clipboard on the local machine, bypassing remote system clipboard.
 

@@ -1,4 +1,4 @@
-FROM debian:stretch-slim
+FROM debian:bookworm-slim
 
 RUN apt-get update  \
   && apt-get install -y --no-install-recommends \
@@ -13,13 +13,13 @@ RUN apt-get update  \
     make \
     procps \
     wget \
-  && wget -O - https://github.com/tmux/tmux/releases/download/2.6/tmux-2.6.tar.gz | tar xzf - \
-  && cd tmux-2.6 \
+  && wget -O - https://github.com/tmux/tmux/releases/download/3.5a/tmux-3.5a.tar.gz | tar xzf - \
+  && cd tmux-3.5a \
   && LDFLAGS="-L/usr/local/lib -Wl,-rpath=/usr/local/lib" ./configure --prefix=/usr/local \
   && make \
   && make install \
   && cd .. \
-  && rm -rf tmux-2.6 \
+  && rm -rf tmux-3.5a \
   && apt-get purge -y gcc make \
   && apt-get -y autoremove \
   && apt-get clean \
@@ -42,5 +42,4 @@ RUN git clone https://github.com/samoshkin/tmux-config \
   && rm -rf ./tmux-config
 
 ENV TERM=xterm-256color
-
 

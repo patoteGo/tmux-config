@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y git tmux xclip
+
+      - name: Validate shell scripts
+        run: ./scripts/validate.sh
+
+      - name: Smoke test installer
+        run: |
+          export HOME="${RUNNER_TEMP}/tmux-home"
+          mkdir -p "${HOME}"
+          ./install.sh
+          test -L "${HOME}/.tmux.conf"
+          test -L "${HOME}/.tmux/tmux.conf"
+          test -x "${HOME}/.tmux/plugins/tpm/bin/install_plugins"
+
+      - name: Smoke test tmux startup
+        run: |
+          export HOME="${RUNNER_TEMP}/tmux-home"
+          tmux -L ci -f "${HOME}/.tmux.conf" new-session -d -s smoke
+          tmux -L ci list-sessions
+          tmux -L ci kill-server
+

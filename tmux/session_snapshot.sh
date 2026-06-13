@@ -5,6 +5,9 @@ set -euo pipefail
 SNAPSHOT_DIR="${TMUX_SESSION_SNAPSHOT_DIR:-${HOME}/.tmux/snapshots}"
 LATEST_LINK="${SNAPSHOT_DIR}/latest.tsv"
 KEEP_COUNT="${TMUX_SESSION_SNAPSHOT_KEEP_COUNT:-20}"
+MIN_INTERVAL="${TMUX_SESSION_SNAPSHOT_MIN_INTERVAL:-2}"
+LOCK_DIR="${SNAPSHOT_DIR}/.snapshot.lock"
+LAST_RUN_FILE="${SNAPSHOT_DIR}/.last_snapshot_epoch"
 
 tmux_cmd() {
   if [ -n "${TMUX_SOCKET_PATH:-}" ]; then
@@ -24,6 +27,78 @@ tmux_has_sessions() {
   tmux_cmd list-sessions >/dev/null 2>&1
 }
 
+release_lock() {
+  rm -rf "${LOCK_DIR}"
+}
+
+lock_is_stale() {
+  local pid
+
+  if [ ! -f "${LOCK_DIR}/pid" ]; then
+    return 0
+  fi
+
+  pid="$(cat "${LOCK_DIR}/pid" 2>/dev/null || true)"
+  if [ -z "${pid}" ]; then
+    return 0
+  fi
+
+  if kill -0 "${pid}" 2>/dev/null; then
+    return 1
+  fi
+
+  return 0
+}
+
+acquire_lock() {
+  if mkdir "${LOCK_DIR}" 2>/dev/null; then
+    printf '%s\n' "$$" > "${LOCK_DIR}/pid"
+    trap release_lock EXIT INT TERM
+    return 0
+  fi
+
+  if lock_is_stale; then
+    rm -rf "${LOCK_DIR}"
+    mkdir "${LOCK_DIR}"
+    printf '%s\n' "$$" > "${LOCK_DIR}/pid"
+    trap release_lock EXIT INT TERM
+    return 0
+  fi
+
+  exit 0
+}
+
+should_skip_snapshot() {
+  local reason="$1"
+  local now
+  local last_run
+
+  if [ "${reason}" = "manual" ]; then
+    return 1
+  fi
+
+  if ! [[ "${MIN_INTERVAL}" =~ ^[0-9]+$ ]]; then
+    return 1
+  fi
+
+  if [ "${MIN_INTERVAL}" -le 0 ] || [ ! -f "${LAST_RUN_FILE}" ]; then
+    return 1
+  fi
+
+  now="$(date +%s)"
+  last_run="$(cat "${LAST_RUN_FILE}" 2>/dev/null || true)"
+
+  if ! [[ "${last_run}" =~ ^[0-9]+$ ]]; then
+    return 1
+  fi
+
+  if [ $((now - last_run)) -lt "${MIN_INTERVAL}" ]; then
+    return 0
+  fi
+
+  return 1
+}
+
 prune_old_snapshots() {
   local count=0
   local file
@@ -39,6 +114,7 @@ prune_old_snapshots() {
 save_snapshot() {
   local reason="${1:-manual}"
   local timestamp
+  local epoch
   local tmp_file
   local final_file
 
@@ -47,10 +123,16 @@ save_snapshot() {
   fi
 
   ensure_snapshot_dir
+  acquire_lock
+
+  if should_skip_snapshot "${reason}"; then
+    exit 0
+  fi
 
   timestamp="$(date +%Y%m%dT%H%M%S)"
-  tmp_file="${SNAPSHOT_DIR}/.latest.${timestamp}.$$"
-  final_file="${SNAPSHOT_DIR}/tmux_sessions_${timestamp}.tsv"
+  epoch="$(date +%s)"
+  tmp_file="${SNAPSHOT_DIR}/.latest.${timestamp}.$$.tmp"
+  final_file="${SNAPSHOT_DIR}/tmux_sessions_${timestamp}_$$.tsv"
 
   {
     printf 'meta\tversion\t1\n'
@@ -63,6 +145,7 @@ save_snapshot() {
 
   mv "${tmp_file}" "${final_file}"
   ln -sfn "$(basename "${final_file}")" "${LATEST_LINK}"
+  printf '%s\n' "${epoch}" > "${LAST_RUN_FILE}"
 
   prune_old_snapshots
 }
